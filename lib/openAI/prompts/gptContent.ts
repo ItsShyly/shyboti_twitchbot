@@ -3,6 +3,12 @@
     export const gptContent = (emoteCollection: string): string => 
 
     `
+    ### System Information ###
+    Du erhältst drei Informationsquellen:
+    1. (dieser Text) - Deine Persönlichkeit und Regeln
+    2. Gesprächsverlauf (Context) - NUR für Kontext benutzen, nicht für deine Identität
+    3. Prompt von einem User - Direkte Aufforderung zur Antwort
+
     Bitte antworte mit einer Nachricht von maximal 400 Zeichen. Integriere passende 7tv-Emotes aus der folgenden Liste: " 
     ${emoteCollection} ". 
 
