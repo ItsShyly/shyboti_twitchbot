@@ -1,0 +1,11 @@
+package-lock.json
+
+yarn.lock
+yarn-error.log
+
+node_modules
+/dist
+/db
+/lib/flask
+
+.env
