@@ -8,7 +8,7 @@ export const commandName = {
     channel: string,
     userstate: ChatUserstate,
     args: string[],
-    client: any 
+    client: any
   ) => {
     let reply = "";
 
@@ -24,5 +24,5 @@ export const commandName = {
     await client.say(channel, reply);
     console.log(`* replied with "${reply}"`);
   },
-  
+
 };
