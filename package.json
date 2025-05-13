@@ -23,6 +23,7 @@
     "tmi.js": "^1.8.3"
   },
   "devDependencies": {
+    "@types/dotenv": "^6.1.1",
     "@types/geopoint": "^1.0.3",
     "@types/node": "^16.4.13",
     "@types/node-fetch": "^2.6.12",
