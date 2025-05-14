@@ -1,5 +1,4 @@
 import type { ChatUserstate } from "tmi.js";
-import fetch from "node-fetch";
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
 
@@ -84,34 +83,34 @@ export const commandName = {
           `SELECT emoteSetId FROM EmoteConfig WHERE channel = ?`,
           [channel]
         );
-      
+
         if (!row) {
           const reply = `Kein Emote-Set für diesen Channel eingerichtet! Benutze "!7tv add [ID/URL]" um eines zu setzen.`;
           await client.say(channel, reply);
           console.log(`* replied with 1 "${reply}"`);
           return;
         }
-      
+
         const emoteSetId = row.emoteSetId;
         const response = await fetch(`https://7tv.io/v3/emote-sets/${emoteSetId}`);
         const data = await response.json();
-      
+
         if (data.emotes && data.emotes.length > 0) {
           // Get 'numEmotes' random emotes
           const randomEmotes = [];
           const emotesList = data.emotes;
-      
+
           // Shuffle emotesList for true randomness
           for (let i = emotesList.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [emotesList[i], emotesList[j]] = [emotesList[j], emotesList[i]];  // Swap
           }
-      
+
           // Pick the requested number of random emotes (capped at 10)
           for (let i = 0; i < numEmotes && i < emotesList.length; i++) {
             randomEmotes.push(emotesList[i].name);
           }
-      
+
           const reply = randomEmotes.join(" ");
           await client.say(channel, reply);
           console.log(`* replied with 2 "${reply}"`);
@@ -120,7 +119,7 @@ export const commandName = {
           await client.say(channel, reply);
           console.log(`* replied with 3 "${reply}"`);
         }
-      
+
       } else {
         const reply =
           "Verwendung: !7tv add [ID oder URL] | +7tv random [Anzahl]";
