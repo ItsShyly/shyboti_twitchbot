@@ -1,6 +1,6 @@
-import { ChatUserstate } from 'tmi.js';
-import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
+import sqlite3 from 'sqlite3';
+import { ChatUserstate } from 'tmi.js';
 
 // Function to sanitize the channel name
 function sanitizeChannelName(channel: string): string {

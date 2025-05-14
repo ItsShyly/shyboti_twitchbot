@@ -1,5 +1,4 @@
 import { ChatClient } from "@twurple/chat";
-import { readdirSync } from "fs";
 
 export const ask = {
   name: "ask",

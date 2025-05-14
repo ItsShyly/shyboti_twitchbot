@@ -1,6 +1,6 @@
-import { commands } from "../index"; // Import commands to execute them
 import os from "os"; // For system-related info
 import { ChatUserstate } from "tmi.js";
+import { commands } from "../index.ts"; // Import commands to execute them
 
 // Keep track of bot's start time
 const botStartTime = Date.now();
@@ -75,10 +75,10 @@ export const ping = {
 
     console.log("0-did that work? ")
 
-  
 
-    
-    
+
+
+
     console.log("1-did that work? ")
 
     const startTime = performance.now(); // Start timing
@@ -120,22 +120,22 @@ export const ping = {
       formattedTime = `${timeSeconds.toFixed(1)}s`; // Show time in seconds with decimal precision
     }
 
-   // Calculate the memory used by just this command execution
-   const commandMemoryUsage = endMemory - startMemory;
-   const commandMemoryUsageKB = (commandMemoryUsage / 1024); // in KB
+    // Calculate the memory used by just this command execution
+    const commandMemoryUsage = endMemory - startMemory;
+    const commandMemoryUsageKB = (commandMemoryUsage / 1024); // in KB
 
-   // Debug: Check the memory usage
-   console.log("Memory used by command:", commandMemoryUsageKB, "KB");
+    // Debug: Check the memory usage
+    console.log("Memory used by command:", commandMemoryUsageKB, "KB");
 
-   // Calculate the percentage of total system memory this command used
-   const memoryDeltaPercent = Math.max((commandMemoryUsageKB / 1024) * 100, 1); // Minimum 1% for visibility
+    // Calculate the percentage of total system memory this command used
+    const memoryDeltaPercent = Math.max((commandMemoryUsageKB / 1024) * 100, 1); // Minimum 1% for visibility
 
-   const memoryBar = createMemoryBar(memoryDeltaPercent);
+    const memoryBar = createMemoryBar(memoryDeltaPercent);
 
-   // Display command stats including the size of the command object itself
-   await client.say(
-     channel,
-     `command=${commandName} | memoryUsage=${memoryBar} (+${commandMemoryUsageKB.toFixed(1)}KB) | time=${formattedTime}`
-   );
+    // Display command stats including the size of the command object itself
+    await client.say(
+      channel,
+      `command=${commandName} | memoryUsage=${memoryBar} (+${commandMemoryUsageKB.toFixed(1)}KB) | time=${formattedTime}`
+    );
   },
 };

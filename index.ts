@@ -20,7 +20,7 @@ const commands: Record<
   ) => Promise<void>
 > = {};
 
-// Dynamically load commands from the `commands` folder
+// load commands from the `commands` folder
 const commandsPath = resolve(__dirname, "./commands");
 const commandNames: string[] = [];
 readdirSync(commandsPath).forEach((file) => {
@@ -104,24 +104,35 @@ async function onMessage(
 ) {
   if (self || !message.startsWith(IDENTIFIER)) return;
 
-  const db = await initDb();
   await initChannelTable(db, channel);
   message = message.slice(1); // Remove the identifier (+)
-  const [commandInput, ...args] = message.split(" "); // Split the message into the command and arguments
+  const [commandInput, ...commandArgs] = message.split(" "); // Split the message into the command and arguments
 
-  let command = await getMainCommand(db, commandInput?.toLowerCase() ?? "");
-  let commandArgs = args; // Use `commandArgs` to avoid confusion with the name `arguments`
-  let fullCommand = command + " " + args.join(" ");
+  const command = await getMainCommand(db, commandInput?.toLowerCase() ?? "");
+  // moved commandArgs inside the first declaration
+  //const commandArgs = args; // Use `commandArgs` to avoid confusion with the name `arguments`
+  // let fullCommand = command + " " + args.join(" "); // to be removed ( unused variable )
   // Check if the commandInput contains more than one word
-  let commandParts = command.trim().split(/\s+/); // Split the command into words
-  if (commandParts.length > 1) {
-    command = commandParts[0]; // Use only the first word as the command
-    commandArgs = [...commandParts.slice(1), ...args]; // Merge commandParts (excluding the command) with args
-  }
+  // the commandInput by the current logic can never be more than one word
+  /**
+   * dont understand the purpose of this part.
+   * assuming command is a string ( and should only be one word )
+   * commandParts is then a array with the length of 1
+   * then all this is doing, reassigning variables
+   * thus it can be safely removed entirely
+   *
+   * if the command inside the database is more than one word, things are overcomplicated a lot.
+   * commands should only consist of one word and (optional) arguments
+   */
+  // let commandParts = command.trim().split(/\s+/); // Split the command into words
+  // if (commandParts.length > 1) {
+  //   command = commandParts[0]; // Use only the first word as the command
+  //   commandArgs = [...commandParts.slice(1), ...args]; // Merge commandParts (excluding the command) with args
+  // }
 
   if (command) {
     try {
-      const tableName = `channel_${channel.replace("#", "")}`;
+      const tableName: string = `channel_${channel.replace("#", "")}`;
 
       // Use the main command (even if it's an alias) for checking and retrieving command data
       const cmdData = await db.get(
@@ -136,20 +147,21 @@ async function onMessage(
           return;
         }
 
-        // Check if cooldown is required
-        const now = Date.now();
-        if (cooldown > 0 && now - lastUsed < cooldown * 1000) {
-          const remainingTime = Math.ceil(
-            (cooldown * 1000 - (now - lastUsed)) / 1000
-          );
-
-          return;
-        }
-
         // Check if modOnly is enabled and the user is not a moderator
         if (modOnly && !userstate.mod) {
           return;
         }
+
+        // Check if cooldown is required
+        const now = Date.now();
+        if (cooldown > 0 && now - lastUsed < cooldown * 1000) {
+          // const remainingTime = Math.ceil(
+          //   (cooldown * 1000 - (now - lastUsed)) / 1000
+          // );
+
+          return;
+        }
+
 
         // Update the lastUsed time and execute the command
         await db.run(`UPDATE ${tableName} SET lastUsed = ? WHERE command = ?`, [
@@ -168,6 +180,10 @@ async function onMessage(
 }
 
 // Set up the message listener
+/**
+ * moved db initialization outside of the messsage handler as its only needed once
+ */
+const db = await initDb();
 client.on("message", onMessage);
 
 // Connect the client

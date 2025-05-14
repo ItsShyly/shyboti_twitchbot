@@ -1,13 +1,13 @@
-import type { ChatUserstate } from "tmi.js";
-import dotenv from "dotenv";
-import sqlite3 from "sqlite3";
-import { open } from "sqlite";
 import axios from 'axios';
+import dotenv from "dotenv";
+import { open } from "sqlite";
+import sqlite3 from "sqlite3";
+import type { ChatUserstate } from "tmi.js";
 
 dotenv.config();
 
 
-const OPEN_CAGE_API_KEY =  process.env.OPENCAGE_API_KEY;
+const OPEN_CAGE_API_KEY = process.env.OPENCAGE_API_KEY;
 
 
 const getCoordinatesFromAPI = async (location: string) => {
@@ -134,11 +134,11 @@ const createMatchTable = async (matchId: string) => {
 
 const manageLocation = async (command: string, location: string, imgur: string = '') => {
   const db = await getDB('geo-locations.db');
-  
+
   if (command === 'add') {
     // Ensure the location does not accidentally have the imgur link removed or altered
     const filteredLocation = location.trim();
-    
+
     // If an imgur link is provided, add it as imgur column in the DB
     if (imgur && imgur.match(/https?:\/\/(www\.)?imgur\.com\/[a-zA-Z0-9]+/)) {
       // Fetch coordinates using the API for the filtered location
@@ -153,7 +153,7 @@ const manageLocation = async (command: string, location: string, imgur: string =
       // Store the full location string along with coordinates and imgur link
       await db.run(`
         INSERT INTO locations (imgur, location, lat, lon) 
-        VALUES (?, ?, ?, ?)`, 
+        VALUES (?, ?, ?, ?)`,
         [imgur, filteredLocation, lat, lon]
       );
       console.log(`Location ${filteredLocation} with imgur ${imgur} added to the database.`);
@@ -183,7 +183,7 @@ export const commandGeo = {
       gameActive = true;
       guesses = [];
       client.say(channel, `New round started! Match ID: ${matchId} | Guess the location: ${currentLocation.imgur} | 2.5mins time | +geo guess oder +gg <guess>| Du kannst max. 5 guess Angaben machen, egal ob Stadt, Land, Region oder Straße. Bsp: +gg Uganda Kampala `);
-    
+
       gameTimers[matchId] = 150;
 
       // Inside the game interval logic
@@ -193,7 +193,7 @@ export const commandGeo = {
         if (gameTimers[matchId] === 60) {
           client.say(channel, "Nur noch 60 sekunden");
         }
-      
+
         if (gameTimers[matchId] === 30) {
           client.say(channel, "Nur noch 30 sekunden");
         }
@@ -206,7 +206,7 @@ export const commandGeo = {
     } else if (command === "guess" && gameActive) {
       const matchId = Object.keys(gameIntervals)[0]; // Automatically associates guesses with the current active match
       if (!currentLocation || !matchId) return;
-    
+
       const guess = args.slice(1).join(" ").toLowerCase();  // Combine all parts into one location guess
       if (guess) {
         // Fetch coordinates for the guess
@@ -215,25 +215,25 @@ export const commandGeo = {
           client.say(channel, "Hm Konnte dort keine cords finden, versuchs mal anders zu schreiben ");
           return;
         }
-    
+
         const distance = await calculateDistance(
           coordinates.lat, coordinates.lon, currentLocation.lat, currentLocation.lon
         );
-    
+
         const userGuesses = guesses.filter(g => g.user === userstate.username).length;
         if (userGuesses >= 5) {
           client.say(channel, `${userstate.username}, you've already made 5 guesses!`);
           return;
         }
-    
-        guesses.push({ 
-          matchId, 
-          user: userstate.username ?? "UnknownUser", 
+
+        guesses.push({
+          matchId,
+          user: userstate.username ?? "UnknownUser",
           location: guess,  // The guess will be the full location
-          distance 
+          distance
         });
         client.say(channel, `${userstate.username} guessed ${guess}!`);
-    
+
         if (gameTimers[matchId] > 30) {
           gameTimers[matchId] = 30;
           client.say(channel, "Noch 30 Sekunden - Jemand hat geguessed");
@@ -295,7 +295,7 @@ const endGame = async (channel: string, client: any, matchId: string) => {
     clearInterval(gameIntervals[matchId]);
   }
 
-  if (guesses.length === 0) { 
+  if (guesses.length === 0) {
     return client.say(channel, "No one guessed. The game has ended.");
   }
 
@@ -311,18 +311,18 @@ const endGame = async (channel: string, client: any, matchId: string) => {
   for (const guess of guesses) {
     await db.run(`
       INSERT INTO match_${sanitizedMatchId} (user, location, distance, match_location) 
-      VALUES (?, ?, ?, ?)`, 
+      VALUES (?, ?, ?, ?)`,
       [guess.user, guess.location, guess.distance, currentLocation.location]
-    );    
+    );
   }
   await db.close();
 };
 
 
 const calculateDistance = async (
-  lat1: number, 
-  lon1: number, 
-  lat2: number, 
+  lat1: number,
+  lon1: number,
+  lat2: number,
   lon2: number
 ) => {
   const R = 6371; // Radius of the Earth in km
@@ -333,8 +333,8 @@ const calculateDistance = async (
   const Δλ = toRadians(lon2 - lon1);
 
   const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-            Math.cos(φ1) * Math.cos(φ2) *
-            Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    Math.cos(φ1) * Math.cos(φ2) *
+    Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
 
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c; // Distance in kilometers
