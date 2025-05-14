@@ -1,5 +1,4 @@
 import * as dotenv from "dotenv";
-import fetch from "node-fetch";
 import type { ChatUserstate } from "tmi.js";
 import { fetchEmotesFromSet, getEmoteSet } from "../lib/7tv/fetchEmotes.ts";
 dotenv.config({ path: "./.env" }); // Explicit path
