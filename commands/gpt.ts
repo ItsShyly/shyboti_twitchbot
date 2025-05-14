@@ -1,7 +1,7 @@
-import { getEmoteSet, fetchEmotesFromSet } from "../lib/7tv/fetchEmotes";
-import { aiResponse } from "../lib/openAI/aiResponse";
-import { gptContent} from "../lib/openAI/prompts/gptContent";
 import { ChatUserstate } from "tmi.js";
+import { fetchEmotesFromSet, getEmoteSet } from "../lib/7tv/fetchEmotes.ts";
+import { aiResponse } from "../lib/openAI/aiResponse.ts";
+import { gptContent } from "../lib/openAI/prompts/gptContent.ts";
 
 export const commandName = {
   name: "gpt",
@@ -32,7 +32,7 @@ export const commandName = {
 
       const username = userstate.username ?? "";
       const message = args.join(" ");
-      const content =  gptContent(emotes.toString());
+      const content = gptContent(emotes.toString());
 
       reply = await aiResponse(
         username,

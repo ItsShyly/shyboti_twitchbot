@@ -1,8 +1,8 @@
-import { ChatUserstate } from 'tmi.js';
+import { Database, open } from 'sqlite'; // Import Database type
 import sqlite3 from 'sqlite3';
-import { open, Database } from 'sqlite'; // Import Database type
-import { aiResponse } from "../lib/openAI/aiResponse";
-import sixtySixContent from "../lib/openAI/prompts/66Content";
+import { ChatUserstate } from 'tmi.js';
+import { aiResponse } from "../lib/openAI/aiResponse.ts";
+import sixtySixContent from "../lib/openAI/prompts/66Content.ts";
 
 // Initialize the database
 async function initializeDatabase(): Promise<Database> {

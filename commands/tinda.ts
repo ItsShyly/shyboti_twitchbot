@@ -1,15 +1,15 @@
 import type { ChatUserstate } from "tmi.js";
-import { aiResponse } from "../lib/openAI/aiResponse";
-import tindaContent from "../lib/openAI/prompts/tindaContent";
+import { aiResponse } from "../lib/openAI/aiResponse.ts";
+import tindaContent from "../lib/openAI/prompts/tindaContent.ts";
 
 
 export const commandName = {
-    name: "tinda",
-    handler: async (
-      channel: string,
-      userstate: ChatUserstate,
-      args: string[],
-      client: any
+  name: "tinda",
+  handler: async (
+    channel: string,
+    userstate: ChatUserstate,
+    args: string[],
+    client: any
   ) => {
     let reply = "";
 
@@ -17,7 +17,7 @@ export const commandName = {
       const username = userstate["display-name"] || "Unbekannt";
       let message = args.join(" ");
 
-   
+
       reply = await aiResponse(
         username, // User Name
         message, // User Message
@@ -27,11 +27,11 @@ export const commandName = {
       );
 
       reply = reply
-      .replace(/[^\p{Emoji}\p{L}\p{N}\s]/gu, "")
-      .replace(/"/g, " ")
-      .replace(/,/g, " ,")
-      .replace(/Tinda:/gi, "");
-    
+        .replace(/[^\p{Emoji}\p{L}\p{N}\s]/gu, "")
+        .replace(/"/g, " ")
+        .replace(/,/g, " ,")
+        .replace(/Tinda:/gi, "");
+
     } else {
       reply = "sag was oder bleib leise NaUnd";
     }

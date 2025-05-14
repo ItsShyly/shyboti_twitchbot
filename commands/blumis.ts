@@ -1,7 +1,7 @@
-import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
-import { ChatUserstate } from 'tmi.js';
 import path from 'path';
+import { open } from 'sqlite';
+import sqlite3 from 'sqlite3';
+import { ChatUserstate } from 'tmi.js';
 
 // Initialize the database
 async function initDB() {
@@ -38,7 +38,7 @@ export const commandName = {
 
     // Debugging logs
     console.log(`User command received: ${username}`);
-    
+
     if (!username) {
       console.error("Error: Username is undefined!");
       return;

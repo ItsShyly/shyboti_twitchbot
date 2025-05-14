@@ -1,5 +1,5 @@
-import type { ChatUserstate } from "tmi.js";
 import axios, { AxiosError, AxiosResponse } from "axios"; // Import AxiosError type
+import type { ChatUserstate } from "tmi.js";
 
 const TWITCH_API_BASE_URL = "https://api.twitch.tv/helix";
 
@@ -10,29 +10,29 @@ const TWITCH_OAUTH_TOKEN = process.env.AUTH_TOKEN!;
 const LOGS_API_URL = "https://logs.susgee.dev/channel"; // Base URL for logs
 
 async function shortenImageUrl(imageUrl: string | Blob) {
-    try {
-      const formData = new FormData();
-      formData.append('image', imageUrl); // The profile image URL from Twitch
-  
-      const response = await axios.post('https://api.imgur.com/3/image', formData, {
-        headers: {
-          Authorization: `Client-ID 665a92d0507cd27`,
-        },
-      });
-  
-      if (response.data.success) {
-        return response.data.data.link; // The shortened Imgur link
-      } else {
-        console.error('Imgur upload failed:', response.data);
-        return imageUrl; // Fallback to the original URL if upload fails
-      }
-    } catch (error) {
-      console.error('Error uploading image to Imgur:', error);
-      return imageUrl; // Fallback to the original URL if an error occurs
-    }
-  }
+  try {
+    const formData = new FormData();
+    formData.append('image', imageUrl); // The profile image URL from Twitch
 
-  
+    const response = await axios.post('https://api.imgur.com/3/image', formData, {
+      headers: {
+        Authorization: `Client-ID 665a92d0507cd27`,
+      },
+    });
+
+    if (response.data.success) {
+      return response.data.data.link; // The shortened Imgur link
+    } else {
+      console.error('Imgur upload failed:', response.data);
+      return imageUrl; // Fallback to the original URL if upload fails
+    }
+  } catch (error) {
+    console.error('Error uploading image to Imgur:', error);
+    return imageUrl; // Fallback to the original URL if an error occurs
+  }
+}
+
+
 export const user = {
   name: "user",
   handler: async (
@@ -117,8 +117,8 @@ export const user = {
           const logUrl = `${LOGS_API_URL}/${target}/${new Date()
             .toISOString()
             .slice(0, 4)}/${new Date().toISOString().slice(5, 7)}/${new Date()
-            .toISOString()
-            .slice(8, 10)}`;
+              .toISOString()
+              .slice(8, 10)}`;
           console.log("logUrl:", logUrl); // Log the URL being called
 
           const logResponse: AxiosResponse = await axios.get(logUrl);
@@ -174,16 +174,16 @@ export const user = {
             reply += `ㅤ${user} (${count} msgs),`;
           });
         } catch (logError) {
-            // Type guard to check if it's an AxiosError
-            if (logError instanceof AxiosError) {
-                if (logError.response?.status === 404) {
-                    reply += "No Logs available for the specified date.\n";
-                } else {
-                    reply += `– Error fetching log data: ${logError.message}\n`;
-                }
+          // Type guard to check if it's an AxiosError
+          if (logError instanceof AxiosError) {
+            if (logError.response?.status === 404) {
+              reply += "No Logs available for the specified date.\n";
             } else {
-                reply += `– Error fetching log data: Unknown error.\n`;
+              reply += `– Error fetching log data: ${logError.message}\n`;
             }
+          } else {
+            reply += `– Error fetching log data: Unknown error.\n`;
+          }
         }
       }
     } catch (error) {

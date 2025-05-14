@@ -1,8 +1,6 @@
 import { ChatUserstate } from 'tmi.js';
-import sqlite3 from 'sqlite3';
-import { open, Database } from 'sqlite'; // Import Database type
-import { aiResponse } from "../lib/openAI/aiResponse";
-import swContent from "../lib/openAI/prompts/swContent";
+import { aiResponse } from "../lib/openAI/aiResponse.ts";
+import swContent from "../lib/openAI/prompts/swContent.ts";
 
 
 
@@ -43,7 +41,7 @@ export const commandName = {
 
     // Send the reply back to the chat and remove quotation marks
     reply = reply.replace(/"/g, '');
-    reply = reply + " Nerdge" 
+    reply = reply + " Nerdge"
     await client.say(channel, reply);
     console.log(`* replied with "${reply}"`);
   },

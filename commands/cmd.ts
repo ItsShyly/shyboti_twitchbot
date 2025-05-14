@@ -1,8 +1,8 @@
-import type { ChatUserstate } from "tmi.js";
 import fs from "fs";
 import path from "path";
-import sqlite3 from "sqlite3";
 import { open } from "sqlite";
+import sqlite3 from "sqlite3";
+import type { ChatUserstate } from "tmi.js";
 
 // Open or create the database
 const dbPromise = open({
@@ -79,10 +79,8 @@ export const commandName = {
         const commandList = rows
           .map(
             (row) =>
-              `${row.command} (Active: ${
-                row.isActive ? "Yes" : "No"
-              }, Cooldown: ${row.cooldown}s, ModOnly: ${
-                row.modOnly ? "Yes" : "No"
+              `${row.command} (Active: ${row.isActive ? "Yes" : "No"
+              }, Cooldown: ${row.cooldown}s, ModOnly: ${row.modOnly ? "Yes" : "No"
               })`
           )
           .join(", ");
@@ -131,26 +129,25 @@ export const commandName = {
           `UPDATE channel_${tableName} SET modOnly = ? WHERE command = ?`,
           [modOnlyStatus, commandToModOnly]
         );
-        const reply = `Command "${commandToModOnly}" is now ${
-          modOnlyStatus ? "mod-only" : "available to all users"
-        }.`;
+        const reply = `Command "${commandToModOnly}" is now ${modOnlyStatus ? "mod-only" : "available to all users"
+          }.`;
         await client.say(channel, reply);
         console.log(`* replied with "${reply}"`);
       } else if (subCommand === "alias" && args[2]) { // Check if args[2] is valid (alias subcommand)
         const aliasSubCommand = args[1].toLowerCase(); // Correctly get aliasSubCommand from args[1]
         console.log("Alias subcommand:", aliasSubCommand); // Debugging line to see aliasSubCommand
         console.log("CMD: Alias, Args: 2:", args[2], "3:", args[3], "4:", args[4]);
-      
+
         if (aliasSubCommand === "add" && (args[3] || args[4])) {
           console.log("Condition triggered!");
-      
+
           const alias = args[2].toLowerCase();
           const mainCommand = args[3].toLowerCase();
           let argCommand = "";
 
           console.log(alias, mainCommand, argCommand)
           console.log("Adding alias:", alias, "for command:", mainCommand); // Debugging line to see alias and mainCommand
-      
+
           // Check if the main command exists
           const commandExists = await db.get(
             `SELECT 1 FROM channel_${tableName} WHERE command = ?`,
@@ -170,12 +167,12 @@ export const commandName = {
             command = command + ' ' + argCommand
             console.log("triggered:", command)
             console.log("triggered arg:", command)
-          } 
+          }
 
           // Add the alias to the database
           await db.run(
             `INSERT OR IGNORE INTO command_aliases (alias, command) VALUES (?, ?)`,
-            [alias, command ]
+            [alias, command]
           );
           const reply = `Alias "${alias}" has been added for command "${command}".`;
           await client.say(channel, reply);
@@ -187,7 +184,7 @@ export const commandName = {
           const reply = `Alias "${alias}" has been removed.`;
           await client.say(channel, reply);
           console.log(`* replied with "${reply}"`);
-        }else {
+        } else {
           const reply = "Invalid alias subcommand!";
           await client.say(channel, reply);
           console.log(`* replied with "${reply}"`);

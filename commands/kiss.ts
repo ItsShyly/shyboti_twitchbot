@@ -1,8 +1,7 @@
-import type { ChatUserstate } from "tmi.js";
-import { getEmoteSet, fetchEmotesFromSet } from "../lib/7tv/fetchEmotes";
-import fetch from "node-fetch";
-import { CREDENTIALS } from "../configs";
 import * as dotenv from "dotenv";
+import fetch from "node-fetch";
+import type { ChatUserstate } from "tmi.js";
+import { fetchEmotesFromSet, getEmoteSet } from "../lib/7tv/fetchEmotes.ts";
 dotenv.config({ path: "./.env" }); // Explicit path
 
 export const commandName = {
@@ -145,7 +144,7 @@ export const commandName = {
 
             recipient =
               filteredChatters[
-                Math.floor(Math.random() * filteredChatters.length)
+              Math.floor(Math.random() * filteredChatters.length)
               ] || "someone";
 
             // Attempt 10% chance to kiss an emote instead
